@@ -1,0 +1,172 @@
+{% set status = ['Plan to Watch', 'Watching', 'Completed', 'Dropped'] %} {% set
+favourite = ['No comment', 'Favourite'] %} {% macro entry(data,category) -%}
+<div class="flip mx-2 mb-4">
+  <div class="card shadow">
+    <div class="face front">
+      <div class="inner">
+        <!-- <div class="image">
+          <img
+            src="{{ url_for('static', filename='pictures/photo_2020-12-10_12-56-33.jpg') }}"
+          />
+        </div> -->
+        <h4
+          class="
+            card-title
+            text-capitalize text-light
+            bg-primary
+            rounded-top
+            p-3
+          "
+        >
+          {{data['entry_name']}}
+        </h4>
+        <div class="card-content px-2">
+          <div class="row">
+            <div class="col-8">
+              <span>{{data['category_name']}}</span>
+              <br />
+              <span>{{data['status']}} : Episode {{data['episode']}}</span>
+            </div>
+            <div class="col-3 text-center my-auto">
+              {% if data['favourite']|lower == 'favourite' %}
+                  <svg width="16" height="16" fill="#414570" class="bi bi-heart-fill align-middle" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                          d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" />
+                  </svg>
+              {% else %}
+                  <svg width="16" height="16" fill="#414570" class="bi bi-heart align-middle" viewBox="0 0 16 16">
+                      <path
+                          d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z" />
+                  </svg>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="face back">
+      <div class="inner col-12">
+        <form action="" method="post">
+          <div class="form-group">
+            <input
+              class="form-control mt-2"
+              type="text"
+              id="id"
+              name="id"
+              value="{{ data['id'] }}"
+              hidden
+            />
+            <input
+              class="form-control mt-2"
+              type="text"
+              id="title"
+              name="title"
+              value="{{ data['entry_name'] }}"
+              autocomplete="off"
+            />
+          </div>
+          <div class="row">
+            <div class="form-group col-lg-5 col-sm-12 col-12">
+              <select class="form-control" name="category">
+                {% for cat in category %} {% if cat['id'] == data['category_id']
+                %}
+                <option value="{{ cat['id'] }}" selected>
+                  {{cat['name']}}
+                </option>
+                {% else %}
+                <option value="{{ cat['id'] }}">{{cat['name']}}</option>
+                {% endif %} {% endfor %}
+              </select>
+            </div>
+            <div class="form-group col-lg-7 col-sm-12 col-12">
+              <select class="form-control" name="status">
+                {% for stat in status %} {% if stat == data['status']%}
+                <option value="{{stat}}" selected>{{stat}}</option>
+                {% else %}
+                <option value="{{stat}}">{{stat}}</option>
+                {% endif %} {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group form-inline">
+            <label class="col-form-label text-light">Episode</label>
+            <input
+              class="col-8 form-control ml-auto"
+              type="number"
+              id="episode"
+              name="episode"
+              value="{{data['episode']}}"
+              min="0"
+              step="0.5"
+            />
+          </div>
+          <div class="form-group form-inline">
+            <label class="col-form-label text-light">Favourite</label>
+            <select class="col-8 form-control ml-auto" name="favourite">
+              {% for fav in favourite %} {% if fav == data['favourite']%}
+              <option value="{{fav}}" selected>{{fav}}</option>
+              {% else %}
+              <option value="{{fav}}">{{fav}}</option>
+              {% endif %} {% endfor %}
+            </select>
+          </div>
+          <div class="form-group form-inline">
+            <button
+              class="btn btn-info col-4 offset-1"
+              type="submit"
+              id="submitBtn"
+            >
+              Update
+            </button>
+            <a
+              class="btn btn-danger col-4 offset-1"
+              data-toggle="modal"
+              data-target="#delete_entry{{data['id']}}"
+            >
+              Delete
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="text-center flip-icon">
+      <i class="fas fa-angle-double-right"></i>
+    </div>
+  </div>
+</div>
+<div
+  class="modal fade"
+  id="delete_entry{{data['id']}}"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="Delete"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="Delete">Are you sure?</h5>
+        <button
+          class="close"
+          type="button"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        "{{data['entry_name']}}" will be deleted permanently from the database!!
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">
+          Cancel
+        </button>
+        <a class="btn btn-danger" href="?delete_id={{ data['id'] }}&delete_title={{ data['entry_name'] }}"
+          >Delete</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+{%- endmacro %}

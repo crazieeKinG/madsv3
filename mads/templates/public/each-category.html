@@ -1,0 +1,18 @@
+{% extends 'public/dashboard-base.html' %} {% import "macros/entry-card.html" as
+en %} {% set status = ['Watching', 'Plan to Watch', 'Completed', 'Dropped'] %}
+{% block title %} {{ current[0]|upper }}{{ current[1:]|lower }} | M.A.D.S {%
+endblock %} {% block content %}
+<h4 class="col-12 pb-3">
+  {{ current[0]|upper }}{{ current[1:]|lower }} | M.A.D.S
+</h4>
+
+{% for stat in status %}
+<h4 class="col-12 text-capitalize text-light bg-secondary rounded-top p-3">
+  {{stat}}
+</h4>
+{% set count = namespace(value=0) %} {% for each_entry in entry %} {% if
+stat|lower == each_entry['status']|lower %} {{
+en.entry(data=each_entry,category=category) }} {% set count.value = count.value
++ 1 %} {% endif %} {% endfor %} {% if count.value == 0 %}
+<p class="text-secondary ml-3">No records found</p>
+{% endif %} {% endfor %} {% endblock %}

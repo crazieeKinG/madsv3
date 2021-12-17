@@ -1,0 +1,42 @@
+{% extends 'public/dashboard-base.html' %} 
+{% block title %} New Entry | M.A.D.S
+{% endblock %} 
+{% set category_list = [] %}
+ {% for cat in category %} 
+ {% set
+category_list = category_list.append({'id':cat['id'], 'name':cat['name']}) %} {%
+endfor %} 
+{% block content %}
+
+<div class="col-12">
+    <div class="col-sm-12 inline my-2">
+        <span class="h2">New Entry</span>
+        <div class="float-right">
+            <input class="btn btn-secondary text-capitalize" type="button" value="+ Add Entry" id="newEntry" />
+        </div>
+    </div>
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for message
+    in messages %}
+    <div class="alert alert-danger alert-dismissible fade show font-20" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
+    <hr />
+    <div class="col-12">
+        <form action="" method="POST">
+            <div id="entryList" class="row"></div>
+            <hr />
+            <button class="btn btn-primary col-6 offset-3" type="submit" id="submitBtn" disabled>
+                Insert
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    var category_list = {{ category_list| safe }};
+</script>
+{% endblock %}

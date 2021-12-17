@@ -1,0 +1,27 @@
+{% extends 'public/dashboard-base.html' %}
+{% import "macros/entry-card.html" as en %}
+
+{% block title %} Dashboard | M.A.D.S {% endblock %}
+
+
+{% block content %}
+{% for cat in category %}
+  <h4 class="col-12 text-capitalize text-light bg-secondary rounded-top py-3">
+    {{cat['name']}}
+  </h4>
+  {% set count = namespace(value=0) %}
+  {% for each_entry in entry %} 
+    {% if cat['name']|lower == each_entry['category_name']|lower %} 
+      {% if search == 'None' and each_entry['status']|lower == "watching"%} 
+        {{en.entry(data=each_entry,category=category) }} 
+      {%else%}
+        {{en.entry(data=each_entry,category=category) }} 
+      {% endif %} 
+      {% set count.value = count.value + 1 %} 
+    {% endif %} 
+  {% endfor %} 
+  {% if count.value == 0 %}
+  <p class="text-secondary ml-3">No records found</p>
+  {% endif %} 
+{% endfor %} 
+{% endblock %}
