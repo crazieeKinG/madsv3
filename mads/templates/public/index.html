@@ -12,12 +12,13 @@
   {% set count = namespace(value=0) %}
   {% for each_entry in entry %} 
     {% if cat['name']|lower == each_entry['category_name']|lower %} 
-      {% if search == 'None' and each_entry['status']|lower == "watching"%} 
+      {% if search|lower != 'none' %} 
         {{en.entry(data=each_entry,category=category) }} 
-      {%else%}
+        {% set count.value = count.value + 1 %} 
+      {%elif each_entry['status']|lower == "watching" %}
         {{en.entry(data=each_entry,category=category) }} 
+        {% set count.value = count.value + 1 %} 
       {% endif %} 
-      {% set count.value = count.value + 1 %} 
     {% endif %} 
   {% endfor %} 
   {% if count.value == 0 %}
